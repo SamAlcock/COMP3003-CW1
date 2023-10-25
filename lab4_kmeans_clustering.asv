@@ -12,7 +12,7 @@ Mean2 = [3; 4];
 Std2 = std(Mean2);
 Mean3 = [4; -4];
 Std3 = 1;
-Mean4 = [-3; 8];
+Mean4 = [-3; 5];
 Std4 = 1;
 samples = 1000; 
 data1 = Std1 * randn(2, samples) + repmat(Mean1, 1, samples);
@@ -52,13 +52,22 @@ grid on;
 X = trainData';
 K = 4;
 max_iterations = 10; %5;
+max_k = 10;
 % randomly assign the K data points as the initial "centroids" of the K clusters
-centroids = initCentroids(X,K);
-sumD = zeros(K,1);
-for i = 1:max_iterations
-    indices = getClosestCentroids(X, centroids); % reassign the indices to the relevant clusters
-    [centroids, distances] = computCentroidsandDistances(X, indices, K); % recalculate centroids, and distances among all clusters
-    sumD(i) = distances; 
+
+k_sumD = zeros(max_k,1);
+for k = 1:max_k % iterate through multiple K values 
+    centroids = initCentroids(X,k);
+    sumD = zeros(k,1);
+    for i = 1:max_iterations
+        indices = getClosestCentroids(X, centroids); % reassign the indices to the relevant clusters
+        [centroids, distances] = computCentroidsandDistances(X, indices, k); % recalculate centroids, and distances among all clusters
+        sumD(i) = distances; 
+    end
+    k_sumD(k) = sumD(max_iterations); % Get final distance value for finished K value
+    if k_sumD(k - 1) - 500 < k_sumD(k) & k > 1
+        disp('Elbow found at k = %d', k)
+    end
 end
 %idx = kmeans (X, K); %this is to use kmeans function to calculate the
 %indices for each cluster
@@ -68,22 +77,35 @@ end
     xlabel('Iterations');
     ylabel('Overall distances');
     grid on;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Plotting each k_sumD
+figure;
+plot(k_sumD, 'bo-', 'LineWidth',2);
+title('Elbow Method for Optimal K');
+    xlabel('K value')
+    ylabel('Overall distances');
+    grid on;
+
 % 4. Run your KMeans function on the data and plot results
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 message = sprintf('KMeans Clustering (MaxIterations = %d)', max_iterations);
 figure;
-plot(trainData(1, indices == 1),trainData(2, indices == 1),'r.', 'MarkerSize',12);% for 1st cluster
+plot(trainData(1, indices == 1),trainData(2, indices == 1),'b.', 'MarkerSize',12);% for 1st cluster
 hold on;
-plot(trainData(1, indices == 2), trainData(2, indices == 2), 'b.', 'MarkerSize',12); %for 2nd cluster
+plot(trainData(1, indices == 2), trainData(2, indices == 2), 'r.', 'MarkerSize',12); %for 2nd cluster
 hold on;
 plot(trainData(1, indices == 3), trainData(2, indices == 3), 'y.', 'MarkerSize',12); %for 3rd cluster
 hold on;
-plot(trainData(1, indices == 4), trainData(2, indices == 3), 'y.', 'MarkerSize',12); %for 3rd cluster
+plot(trainData(1, indices == 4), trainData(2, indices == 4), 'g.', 'MarkerSize',12); %for 4th cluster
 hold on;
 plot(centroids(1,1),centroids(1,2),'kx', 'MarkerSize',15,'LineWidth',3); %for the 1st centroid
 hold on;
 plot(centroids(2,1),centroids(2,2),'kx', 'MarkerSize', 15, 'LineWidth', 3); %for the 2nd centroid
-legend('Cluster 1', 'Cluster 2', 'Centroids', 'location', 'NW'); %'best');
+hold on;
+plot(centroids(3,1),centroids(3,2),'kx', 'MarkerSize', 15, 'LineWidth', 3); %for the 3rd centroid
+hold on;
+plot(centroids(4,1),centroids(4,2),'kx', 'MarkerSize', 15, 'LineWidth', 3); %for the 4th centroid
+legend('Cluster 1', 'Cluster 2', 'Cluster 3', 'Cluster 4', 'Centroids', 'location', 'NW'); %'best');
 title(message);
 hold off;
 xlabel('x-value');
