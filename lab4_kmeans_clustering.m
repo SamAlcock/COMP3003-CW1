@@ -56,6 +56,10 @@ max_k = 10;
 % randomly assign the K data points as the initial "centroids" of the K clusters
 elbow_found = false;
 k_sumD = zeros(max_k,1);
+k_mse = zeros(max_k,1);
+final_centroids = zeros(max_k,1);
+final_indices = zeros(max_k,1);
+elbow = 0;
 for k = 1:max_k % iterate through multiple K values 
     centroids = initCentroids(X,k);
     sumD = zeros(k,1);
@@ -63,8 +67,11 @@ for k = 1:max_k % iterate through multiple K values
         indices = getClosestCentroids(X, centroids); % reassign the indices to the relevant clusters
         [centroids, distances] = computCentroidsandDistances(X, indices, k); % recalculate centroids, and distances among all clusters
         sumD(i) = distances; 
+        k_mse(i) = mean_squared_error(distances);
     end
-    k_sumD(k) = sumD(max_iterations); % Get final distance value for finished K value
+    final_centroids(k) = centroids;
+    final_indices(k) = indices
+    k_sumD(k) = k_mse(max_iterations); % Get final MSE for finished K value
     if k > 1 && k_sumD(k - 1) - 500 < k_sumD(k) && elbow_found == false
         elbow = k - 1;
         fprintf('Elbow found at k = %d', elbow)
@@ -85,13 +92,16 @@ figure;
 plot(k_sumD, 'bo-', 'LineWidth',2);
 title('Elbow Method for Optimal K');
     xlabel('K value')
-    ylabel('Overall distances');
+    ylabel('MSE');
     grid on;
 
 % 4. Run your KMeans function on the data and plot results
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 message = sprintf('KMeans Clustering (MaxIterations = %d)', max_iterations);
 figure;
+for i = 1:elbow
+    plot(trainData(1, indices == i), trainData(2, indices == i),'b.', 'MarkerSize',12)
+end
 plot(trainData(1, indices == 1),trainData(2, indices == 1),'b.', 'MarkerSize',12);% for 1st cluster
 hold on;
 plot(trainData(1, indices == 2), trainData(2, indices == 2), 'r.', 'MarkerSize',12); %for 2nd cluster
