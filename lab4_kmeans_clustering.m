@@ -59,7 +59,6 @@ k_sumD = zeros(max_k,1);
 k_mse = zeros(max_k,1);
 final_centroids = zeros(max_k,2);
 final_indices = zeros(max_k,1);
-all_indices = zeros(max_k, 4000);
 elbow = 0;
 for k = 1:max_k % iterate through multiple K values 
     centroids = initCentroids(X,k);
@@ -69,12 +68,16 @@ for k = 1:max_k % iterate through multiple K values
         [centroids, distances] = computCentroidsandDistances(X, indices, k); % recalculate centroids, and distances among all clusters
         sumD(i) = distances; 
         k_mse(i) = mean_squared_error(distances);
-        all_indices(k, :) = indices;
 
     end
 
 
-    
+
+    k_sumD(k) = sumD(max_iterations); % Get final distance value for finished K value
+    if k == 4
+        final_centroids = centroids;
+        final_indices = indices;
+    end
 end
 %idx = kmeans (X, K); %this is to use kmeans function to calculate the
 %indices for each cluster
@@ -90,7 +93,7 @@ figure;
 plot(k_sumD, 'bo-', 'LineWidth',2);
 title('Elbow Method for Optimal K');
     xlabel('K value')
-    ylabel('MSE');
+    ylabel('Overall distances');
     grid on;
 
 % 4. Run your KMeans function on the data and plot results
@@ -99,17 +102,17 @@ message = sprintf('KMeans Clustering (MaxIterations = %d)', max_iterations);
 figure;
 
 
-plot(trainData(1, indices == 1), trainData(2, indices == 1),'.', 'Color', [rand,rand,rand], 'MarkerSize',12);
+
+plot(trainData(1, final_indices == 1),trainData(2, final_indices == 1),'b.', 'MarkerSize',12);% for 1st cluster
 hold on;
-plot(trainData(1, indices == 2), trainData(2, indices == 2),'.', 'Color', [rand,rand,rand], 'MarkerSize',12);
-plot(trainData(1, indices == 3), trainData(2, indices == 3),'.', 'Color', [rand,rand,rand], 'MarkerSize',12);
-plot(trainData(1, indices == 4), trainData(2, indices == 4),'.', 'Color', [rand,rand,rand], 'MarkerSize',12);
+plot(trainData(1, final_indices == 2), trainData(2, final_indices == 2), 'r.', 'MarkerSize',12); %for 2nd cluster
+plot(trainData(1, final_indices == 3), trainData(2, final_indices == 3), 'y.', 'MarkerSize',12); %for 3rd cluster
+plot(trainData(1, final_indices == 4), trainData(2, final_indices == 4), 'g.', 'MarkerSize',12); %for 4th cluster
 
-
-plot(centroids(1,1),centroids(1,2),'kx', 'MarkerSize',15,'LineWidth',3); %for the 1st centroid
-plot(centroids(2,1),centroids(2,2),'kx', 'MarkerSize',15,'LineWidth',3); %for the 2nd centroid
-plot(centroids(3,1),centroids(3,2),'kx', 'MarkerSize',15,'LineWidth',3); %for the 3rd centroid
-plot(centroids(4,1),centroids(4,2),'kx', 'MarkerSize',15,'LineWidth',3); %for the 4th centroid
+plot(final_centroids(1,1),final_centroids(1,2),'kx', 'MarkerSize',15,'LineWidth',3); %for the 1st centroid
+plot(final_centroids(2,1),final_centroids(2,2),'kx', 'MarkerSize',15,'LineWidth',3); %for the 2nd centroid
+plot(final_centroids(3,1),final_centroids(3,2),'kx', 'MarkerSize',15,'LineWidth',3); %for the 3rd centroid
+plot(final_centroids(4,1),final_centroids(4,2),'kx', 'MarkerSize',15,'LineWidth',3); %for the 4th centroid
 
 xlabel('x-value');
 ylabel('y-value');
