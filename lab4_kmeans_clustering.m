@@ -56,6 +56,7 @@ max_k = 10;
 % randomly assign the K data points as the initial "centroids" of the K clusters
 elbow_found = false;
 k_sumD = zeros(max_k,1);
+k_indices = zeros(4000,max_k);
 k_mse = zeros(max_k,1);
 final_centroids = zeros(max_k,2);
 final_indices = zeros(max_k,1);
@@ -70,15 +71,20 @@ for k = 1:max_k % iterate through multiple K values
         k_mse(i) = mean_squared_error(distances);
 
     end
-
-
-
-    k_sumD(k) = sumD(max_iterations); % Get final distance value for finished K value
+    k_sumD(k) = sumD(max_iterations); % Get final distance value for finished iteration of K
+    k_indices(:,k) = indices; % Get final indices for finished iteration of K
     if k == 4
         final_centroids = centroids;
         final_indices = indices;
     end
 end
+
+eva = evalclusters(X, k_indices, 'CalinskiHarabasz');
+figure;
+
+plot(eva);
+title('Calinski-Harabasz Method for Optimal K');
+grid on;
 %idx = kmeans (X, K); %this is to use kmeans function to calculate the
 %indices for each cluster
    figure;
