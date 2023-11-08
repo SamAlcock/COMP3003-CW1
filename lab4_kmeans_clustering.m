@@ -34,6 +34,7 @@ xlim([-10 10]);
 ylim([-8 12]);
 grid on;
 
+GMMExample_1D();
 % 2.Concatenate the training datasets and plot
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 trainData = [data1 data2 data3 data4];
@@ -79,9 +80,9 @@ for k = 1:max_k % iterate through multiple K values
     end
 end
 
+% Plotting Calinski-Harabasz evaluation
 eva = evalclusters(X, k_indices, 'CalinskiHarabasz');
 figure;
-
 plot(eva);
 title('Calinski-Harabasz Method for Optimal K');
 grid on;
