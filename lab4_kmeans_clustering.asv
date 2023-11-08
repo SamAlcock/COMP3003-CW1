@@ -69,8 +69,10 @@ for k = 1:max_k % iterate through multiple K values
         indices = getClosestCentroids(X, centroids); % reassign the indices to the relevant clusters
         [centroids, distances] = computCentroidsandDistances(X, indices, k); % recalculate centroids, and distances among all clusters
         sumD(i) = distances; 
+        
+
     end
-    k_mse(k) = mse(X, centroids)/k;
+    k_mse(k) = mse(X, centroids)/;
     k_sumD(k) = sumD(max_iterations); % Get final distance value for finished iteration of K
     k_indices(:,k) = indices; % Get final indices for finished iteration of K
     if k == 4
