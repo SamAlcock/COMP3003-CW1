@@ -34,7 +34,7 @@ xlim([-10 10]);
 ylim([-8 12]);
 grid on;
 
-GMMExample_1D();
+%GMMExample_1D();
 % 2.Concatenate the training datasets and plot
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 trainData = [data1 data2 data3 data4];
@@ -125,3 +125,18 @@ ylabel('y-value');
 xlim([-10 10]);
 ylim([-8 12]);
 grid on;
+
+
+
+GMModel = fitgmdist(X, 4); %GMM with four components
+
+figure;
+y = [zeros(1000,1);ones(1000,1)];
+h = gscatter(X(:,1),X(:,2));
+hold on
+gmPDF = @(x,y) arrayfun(@(x0,y0) pdf(GMModel,[x0 y0]),x,y);
+g = gca;
+fcontour(gmPDF,[[-10,10] [-8 12]])
+title('{\bf Scatter Plot and Fitted Gaussian Mixture Contours}')
+legend(h,'Model 0','Model1', 'Model2', 'Model3');
+hold off
