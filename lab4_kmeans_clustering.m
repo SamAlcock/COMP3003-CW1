@@ -6,7 +6,7 @@ close all;
 clear;
 % 1. Generate dataset
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Mean1 = [-4; -1];
+Mean1 = [-3; -1];
 Std1 = std(Mean1);
 Mean2 = [3; 4];
 Std2 = std(Mean2);
@@ -107,8 +107,6 @@ title('Elbow Method for Optimal K');
 message = sprintf('KMeans Clustering (MaxIterations = %d)', max_iterations);
 figure;
 
-
-
 plot(trainData(1, final_indices == 1),trainData(2, final_indices == 1),'b.', 'MarkerSize',12);% for 1st cluster
 hold on;
 plot(trainData(1, final_indices == 2), trainData(2, final_indices == 2), 'r.', 'MarkerSize',12); %for 2nd cluster
@@ -126,17 +124,19 @@ xlim([-10 10]);
 ylim([-8 12]);
 grid on;
 
-
-
-GMModel = fitgmdist(X, 4); %GMM with four components
-
+hold off;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Plotting GMM
 figure;
-y = [zeros(1000,1);ones(1000,1)];
-h = gscatter(X(:,1),X(:,2));
-hold on
-gmPDF = @(x,y) arrayfun(@(x0,y0) pdf(GMModel,[x0 y0]),x,y);
-g = gca;
-fcontour(gmPDF,[[-10,10] [-8 12]])
-title('{\bf Scatter Plot and Fitted Gaussian Mixture Contours}')
-legend(h,'Model 0','Model1', 'Model2', 'Model3');
-hold off
+hold on;
+gm = fitgmdist(X,4);
+scatter(X(:,1),X(:,2),10,'.');
+
+gmPDF = @(x,y) arrayfun(@(x0,y0) pdf(gm,[x0 y0]),x,y);
+
+idx = cluster(gm,X);
+
+gscatter(X(:,1),X(:,2),idx);
+fcontour(gmPDF,[[-10,10] [-8 12]]);
+legend('Cluster 1','Cluster 2','Cluster 3','Cluster 4','Location','best');
+
