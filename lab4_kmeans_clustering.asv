@@ -138,7 +138,7 @@ idx = cluster(gm,X);
 gscatter(X(:,1),X(:,2),idx);
 fcontour(gmPDF,[[-10,10] [-8 12]]);
 legend('Cluster 1','Cluster 2','Cluster 3','Cluster 4','Location','best');
-hold off;
+
 % GMM Calinski-Harabasz
 evaGMM = evalclusters(X, idx, 'CalinskiHarabasz');
 
@@ -146,11 +146,7 @@ disp(evaGMM);
 
 % Plot comparison of Calinski-Harabasz index values
 figure;
-hold on;
-bar(1,[evaGMM.CriterionValues; eva.CriterionValues(1,4)]);
+bar([evaGMM.CriterionValues, eva.CriterionValues(1,4)]);
 title('Calinski-Harabasz index values for GMM and K-means value (K = 4)');
 xlabel('Model');
-ylabel('Calinski-Harabasz index')
-ylim([12500, 15000])
-legend('GMM', 'K-means')
-hold off;
+y
