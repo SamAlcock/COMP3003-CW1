@@ -6,6 +6,11 @@ close all;
 clear;
 % 1. Generate dataset
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+labels1 = ones(1,1000);
+labels2 = repmat(2,1,1000);
+labels3 = repmat(3,1,1000);
+labels4 = repmat(4,1,1000);
+initialLabels = [labels1, labels2, labels3, labels4];
 Mean1 = [-3; -1];
 Std1 = std(Mean1);
 Mean2 = [3; 4];
@@ -84,6 +89,14 @@ figure;
 plot(eva);
 title('Calinski-Harabasz Method for Optimal K');
 grid on;
+
+% Plotting Davies-Bouldin
+evaDB = evalclusters(X, k_indices, 'DaviesBouldin');
+figure;
+plot(evaDB);
+title('Davies-Bouldin Method for Optimal K');
+grid on;
+
 %idx = kmeans (X, K); %this is to use kmeans function to calculate the
 %indices for each cluster
    figure;
@@ -142,7 +155,9 @@ hold off;
 % GMM Calinski-Harabasz
 evaGMM = evalclusters(X, idx, 'CalinskiHarabasz');
 
-disp(evaGMM);
+% GMM Davies-Bouldin
+evaGMMDB = evalclusters(X, idx, 'DaviesBouldin');
+
 
 % Plot comparison of Calinski-Harabasz index values
 figure;
@@ -152,5 +167,16 @@ title('Calinski-Harabasz index values for GMM and K-means value (K = 4)');
 xlabel('Model');
 ylabel('Calinski-Harabasz index')
 ylim([12500, 15000])
+legend('GMM', 'K-means')
+hold off;
+
+% Plot comparison of Davies-Bouldin index values
+figure;
+hold on;
+bar(1,[evaGMMDB.CriterionValues; evaDB.CriterionValues(1,4)]);
+title('Davies-Bouldin index values for GMM and K-means value (K = 4)');
+xlabel('Model');
+ylabel('Davies-Bouldin index')
+ylim([0.4, 0.5])
 legend('GMM', 'K-means')
 hold off;
