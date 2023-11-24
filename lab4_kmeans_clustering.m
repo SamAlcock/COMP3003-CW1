@@ -82,9 +82,9 @@ plot(evaDB);
 title('Davies-Bouldin Method for Optimal K');
 grid on;
 
-% Plotting each k_sumD
+% Plotting each k_mse
 figure;
-plot(k_sumD, 'bo-', 'LineWidth',2);
+plot(k_mse, 'bo-', 'LineWidth',2);
 title('Elbow Method for Optimal K');
     xlabel('K value')
     ylabel('MSE');
