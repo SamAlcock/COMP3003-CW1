@@ -1,11 +1,7 @@
-% Generate a 2D uncorrelated dataset
-% Implement KMeans from first principles 
-%
 clc;
 close all;
 clear;
-% 1. Generate dataset
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Generating dataset
 labels1 = ones(1,1000);
 labels2 = repmat(2,1,1000);
 labels3 = repmat(3,1,1000);
@@ -24,6 +20,8 @@ data1 = Std1 * randn(2, samples) + repmat(Mean1, 1, samples);
 data2 = Std2 * randn(2, samples) + repmat(Mean2, 1, samples);
 data3 = Std3 * randn(2, samples) + repmat(Mean3, 1, samples);
 data4 = Std4 * randn(2, samples) + repmat(Mean4, 1, samples);
+
+% Plot original dataset
 figure;
 plot(data1(1, :), data1(2,:),'b.', 'MarkerSize',12);
 hold on;
@@ -39,26 +37,13 @@ xlim([-10 10]);
 ylim([-8 12]);
 grid on;
 
-% 2.Concatenate the training datasets and plot
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-trainData = [data1 data2 data3 data4];
-figure;
-plot(trainData(1, :), trainData(2,:),'b.', 'MarkerSize',12);
-legend('Dataset','location', 'NW'); %'best');
-title('Merged Dataset');
-xlabel('x-value');
-ylabel('y-value');
-xlim([-10 10]);
-ylim([-8 12]);
-grid on;
+trainData = [data1 data2 data3 data4]; % creating training data
 
-% 3. Implement KMeans from first principles
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% K-Means from first principles
 X = trainData';
 K = 4;
 max_iterations = 10; %5;
 max_k = 10;
-% randomly assign the K data points as the initial "centroids" of the K clusters
 elbow_found = false;
 k_sumD = zeros(max_k,1);
 k_indices = zeros(4000,max_k);
@@ -97,15 +82,6 @@ plot(evaDB);
 title('Davies-Bouldin Method for Optimal K');
 grid on;
 
-%idx = kmeans (X, K); %this is to use kmeans function to calculate the
-%indices for each cluster
-   figure;
-   plot(sumD, 'bo-', 'linewidth',2);
-   title('Overall distances vs. number of iterations');
-    xlabel('Iterations');
-    ylabel('Overall distances');
-    grid on;
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Plotting each k_sumD
 figure;
 plot(k_sumD, 'bo-', 'LineWidth',2);
@@ -114,8 +90,7 @@ title('Elbow Method for Optimal K');
     ylabel('MSE');
     grid on;
 
-% 4. Run your KMeans function on the data and plot results
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Plotting K-Means
 message = sprintf('KMeans Clustering (MaxIterations = %d)', max_iterations);
 figure;
 
@@ -137,7 +112,8 @@ ylim([-8 12]);
 grid on;
 
 hold off;
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 % Plotting GMM
 figure;
 hold on;
