@@ -55,8 +55,8 @@ for k = 1:max_k % iterate through multiple K values
     centroids = initCentroids(X,k);
     sumD = zeros(k,1);
     for i = 1:max_iterations
-        indices = getClosestCentroids(X, centroids); % reassign the indices to the relevant clusters
-        [centroids, distances] = computCentroidsandDistances(X, indices, k); % recalculate centroids, and distances among all clusters
+        indices = reassignPoints(X, centroids); % reassign the indices to the relevant clusters
+        [centroids, distances] = computeCentroidsandDistances(X, indices, k); % recalculate centroids, and distances among all clusters
         sumD(i) = distances; 
     end
     k_mse(k) = mse(X, centroids)/k;
@@ -105,6 +105,7 @@ plot(final_centroids(2,1),final_centroids(2,2),'kx', 'MarkerSize',15,'LineWidth'
 plot(final_centroids(3,1),final_centroids(3,2),'kx', 'MarkerSize',15,'LineWidth',3); %for the 3rd centroid
 plot(final_centroids(4,1),final_centroids(4,2),'kx', 'MarkerSize',15,'LineWidth',3); %for the 4th centroid
 
+title('K-Means clustering when K = 4')
 xlabel('x-value');
 ylabel('y-value');
 xlim([-10 10]);
@@ -128,6 +129,7 @@ gscatter(X(:,1),X(:,2),idx);
 fcontour(gmPDF,[[-10,10] [-8 12]]);
 legend('Cluster 1','Cluster 2','Cluster 3','Cluster 4','Location','best');
 hold off;
+
 % GMM Calinski-Harabasz
 evaGMM = evalclusters(X, idx, 'CalinskiHarabasz');
 
@@ -142,7 +144,7 @@ bar(1,[evaGMM.CriterionValues; eva.CriterionValues(1,4)]);
 title('Calinski-Harabasz index values for GMM and K-means value (K = 4)');
 xlabel('Model');
 ylabel('Calinski-Harabasz index')
-ylim([12500, 15000])
+ylim([12000, 14500])
 legend('GMM', 'K-means')
 hold off;
 
@@ -153,6 +155,6 @@ bar(1,[evaGMMDB.CriterionValues; evaDB.CriterionValues(1,4)]);
 title('Davies-Bouldin index values for GMM and K-means value (K = 4)');
 xlabel('Model');
 ylabel('Davies-Bouldin index')
-ylim([0.4, 0.5])
+ylim([0.47, 0.5])
 legend('GMM', 'K-means')
 hold off;
