@@ -5,7 +5,7 @@ m = size(X,1);
 
 for i = 1:m 
     k = 1;
-   min_dist = (X(i,:) - centroids(1,:)) * (X(i,:) - centroids(1,:))'; % calculate original minimum distribution
+   min_dist = (X(i,:) - centroids(1,:)) * (X(i,:) - centroids(1,:))'; % calculate original minimum distance
     for j = 2:K
         dist = sum((X(i,:) - centroids(j,:)) .^ 2);
         if (dist < min_dist)
